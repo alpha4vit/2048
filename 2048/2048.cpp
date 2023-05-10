@@ -9,7 +9,7 @@
 void drawBar(RenderWindow& window, vector<int> num, int state);
 void drawPlayGround(RenderWindow& window, int state);
 void showCurrentResult(RenderWindow& window, int CURRENT_RESULT);
-
+void writeToFileResults(int LAST_RESULT);
 int play()
 {
     int CURRENT_RESULT = 0;
@@ -74,13 +74,14 @@ int play()
             }
             else if (buttonExit.isMouseOver(game)) {
                 game.close();
-            }
+            }   
         }
        
         showCurrentResult(game, CURRENT_RESULT);
 
         game.display();
     }
+    writeToFileResults(CURRENT_RESULT);
     return CURRENT_RESULT;
 }
 
@@ -138,5 +139,23 @@ void drawButton(RenderWindow& window, Button& button) {
         window.draw(button.getSprite());
     }
 }
+
+
+
+void writeToFileResults(int LAST_RESULT) {
+    fstream file;
+    file.open("result.txt");
+    int BEST_RESULT;
+    file >> BEST_RESULT;
+    file >> BEST_RESULT;
+    file.close();
+    if (BEST_RESULT < LAST_RESULT)
+        BEST_RESULT = LAST_RESULT;
+    ofstream fout;
+    fout.open("result.txt");
+    fout << LAST_RESULT << "\n" << BEST_RESULT;
+    fout.close();
+}
+
 
 
