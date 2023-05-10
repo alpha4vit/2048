@@ -2,7 +2,7 @@
 #include"includes.h"
 #include"Nums.h"
 
-void MoveRight(vector<vector<vector<int>>>& nums)
+void MoveRight(vector<vector<vector<int>>>& nums, int& CURRENT_RESULT)
 {
 	for (int row = 0; row < nums.size(); ++row){
 		int i = nums[row].size() - 1;
@@ -16,6 +16,7 @@ void MoveRight(vector<vector<vector<int>>>& nums)
                 if (j < nums[row].size() && nums[row][j][0] == nums[row][i][0]) {
                     // ≈сли найдено одинаковое значение, складываем их
                     nums[row][j][0] += nums[row][i][0];
+                    CURRENT_RESULT += nums[row][i][0]*2;
                     nums[row][i][0] = 0;
                 }
                 else {
@@ -33,7 +34,7 @@ void MoveRight(vector<vector<vector<int>>>& nums)
 	}
 }
 
-void MoveLeft(vector<vector<vector<int>>>& nums)
+void MoveLeft(vector<vector<vector<int>>>& nums, int& CURRENT_RESULT)
 {
     for (int row = 0; row < nums.size(); ++row) {
 
@@ -48,6 +49,7 @@ void MoveLeft(vector<vector<vector<int>>>& nums)
 
                 if (j >= 0 && nums[row][index][0] == nums[row][j][0]) {
                     nums[row][j][0] *= 2;
+                    CURRENT_RESULT += nums[row][index][0]*2;
                     nums[row][index][0] = 0;
                 }
                 else {
@@ -63,7 +65,7 @@ void MoveLeft(vector<vector<vector<int>>>& nums)
     }
 }
 
-void MoveDown(vector<vector<vector<int>>>& nums)
+void MoveDown(vector<vector<vector<int>>>& nums, int& CURRENT_RESULT)
 {
     for (int col = 0; col < nums.size(); ++col) {
         int i = nums[col].size() - 1;
@@ -77,6 +79,7 @@ void MoveDown(vector<vector<vector<int>>>& nums)
                 if (j < nums[col].size() && nums[j][col][0] == nums[i][col][0]) {
                     // ≈сли найдено одинаковое значение, складываем их
                     nums[j][col][0] += nums[i][col][0];
+                    CURRENT_RESULT += nums[i][col][0]*2;
                     nums[i][col][0] = 0;
                 }
                 else {
@@ -94,7 +97,7 @@ void MoveDown(vector<vector<vector<int>>>& nums)
     }
 }
 
-void MoveUp(vector<vector<vector<int>>>& nums)
+void MoveUp(vector<vector<vector<int>>>& nums, int& CURRENT_RESULT)
 {
     for (int col = 0; col < nums.size(); ++col) {
 
@@ -109,6 +112,7 @@ void MoveUp(vector<vector<vector<int>>>& nums)
 
                 if (j >= 0 && nums[index][col][0] == nums[j][col][0]) {
                     nums[j][col][0] *= 2;
+                    CURRENT_RESULT += nums[index][col][0]*2;
                     nums[index][col][0] = 0;
                 }
                 else {
@@ -124,69 +128,4 @@ void MoveUp(vector<vector<vector<int>>>& nums)
     }
 }
 
-
-//void MoveRight(vector<vector<vector<int>>>& nums)
-//{
-//	for (int i = 0; i < size(nums); ++i) {
-//		for (int j = size(nums[i]) - 1; j >= 0; --j) {
-//			if (i != 0 && nums[j][i][0] == nums[j][i - 1][0]) {
-//				nums[j][i][0] *= 2;
-//				nums[j][i- 1][0] = 0;
-//			}
-//			else if (i!= size(nums[i]) - 1 && nums[j][i + 1][0] == 0) {
-//				swap(nums[j][i][0], nums[j][i+ 1][0]);
-//			}
-//
-//		}
-//	}
-//	newRandNum(nums);
-//}
-//
-//void MoveLeft(vector<vector<vector<int>>>& nums)
-//{
-//	for (int i = 0; i < size(nums); ++i) {
-//		for (int j = size(nums[i]) - 1; j >= 0; --j) {
-//			if (j != 0 && nums[i][j - 1][0] == 0) {
-//				swap(nums[i][j - 1][0], nums[i][j][0]);
-//			}
-//			else if (j != 0 && nums[i][j - 1][0] == nums[i][j][0]) {
-//				nums[i][j - 1][0] *= 2;
-//				nums[i][j][0] = 0;
-//			}
-//		}
-//	}
-//	newRandNum(nums);
-//}
-//
-//void MoveUp(vector<vector<vector<int>>>& nums)
-//{
-//	for (int i = 0; i < size(nums); ++i) {
-//		for (int j = size(nums) - 1; j >= 0; --j) {
-//			if (j != 0 && nums[j - 1][i][0] == 0) {
-//				swap(nums[j][i][0], nums[j - 1][i][0]);
-//			}
-//			else if (j != 0 && nums[j - 1][i][0] == nums[j][i][0]) {
-//				nums[j - 1][i][0] *= 2;
-//				nums[j][i][0] = 0;
-//			}
-//		}
-//	}
-//	newRandNum(nums);
-//}
-//
-//void MoveDown(vector<vector<vector<int>>>& nums)
-//{
-//	for (int i = 0; i < size(nums); ++i) {
-//		for (int j = 0; j < size(nums); ++j) {
-//			if (j != size(nums) - 1 && nums[j + 1][i][0] == 0) {
-//				swap(nums[j + 1][i][0], nums[j][i][0]);
-//			}
-//			else if (j != size(nums) - 1 && nums[j][i][0] == nums[j + 1][i][0]) {
-//				nums[j + 1][i][0] *= 2;
-//				nums[j][i][0] = 0;
-//			}
-//		}
-//	}
-//	newRandNum(nums);
-//}
 

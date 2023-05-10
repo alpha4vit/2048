@@ -136,6 +136,7 @@
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="move.cpp" />
     <ClCompile Include="Nums.cpp" />
+    <ClCompile Include="Playground.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2048.h" />
@@ -145,6 +146,7 @@
     <ClInclude Include="move.h" />
     <ClInclude Include="Nums.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="Playground.h" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="CyrilicOld.TTF" />

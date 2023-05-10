@@ -1,22 +1,29 @@
+#pragma once
 #include"2048.h"
 #include"Button.h"
 #include"includes.h"
 #include"Background.h"
 
-void drawButton(RenderWindow& window, Button& button);
+void MainMenu();
 void drawText(RenderWindow& window, String text, Vector2f position, int number);
 
 int main() {
+    MainMenu();
+}
+
+
+void MainMenu() {
     RenderWindow menu(VideoMode(1000, 1000), "Main menu");
+    int LAST_RESULT;
+    int BEST_RESULT;
 
-
-    //SETTING ICON
+    //SETTING ICON`
     Image icon = *new Image();
     icon.loadFromFile("src\\logo\\logo.png");
     menu.setIcon(427, 427, icon.getPixelsPtr());
-    Button button1 = *new Button(*new Vector2f(250, 460));
-    Button button2 = *new Button(*new Vector2f(250, 560));
-    Button button3 = *new Button(*new Vector2f(250, 660));
+    Button buttonPlay = *new Button(*new Vector2f(250, 460));
+    Button buttonSettings = *new Button(*new Vector2f(250, 560));
+    Button buttonAboutUs = *new Button(*new Vector2f(250, 660));
 
     Background bg = *new Background();
     while (menu.isOpen()) {
@@ -35,46 +42,28 @@ int main() {
 
         if (Keyboard::isKeyPressed(Keyboard::A)) {
             menu.close();
-            showPlayGround();
+            
         }
         if (Mouse::isButtonPressed(Mouse::Left)) {
-            if (button1.isMouseOver(menu)) {
+            if (buttonPlay.isMouseOver(menu)) {
                 menu.close();
-                showPlayGround();
+                LAST_RESULT = play();
             }
         }
 
-        drawButton(menu, button1);
-        drawButton(menu, button2);
-        drawButton(menu, button3);
-        drawText(menu, "Play", button1.getSprite().getPosition(), 1);
-        drawText(menu, "Settings", button2.getSprite().getPosition(), 2);
-        drawText(menu, "About us", button3.getSprite().getPosition(), 3);
+        drawButton(menu, buttonPlay);
+        drawButton(menu, buttonSettings);
+        drawButton(menu, buttonAboutUs);
+        drawText(menu, "Play", buttonPlay.getSprite().getPosition(), 1);
+        drawText(menu, "Settings", buttonSettings.getSprite().getPosition(), 2);
+        drawText(menu, "About us", buttonAboutUs.getSprite().getPosition(), 3);
 
 
         menu.display();
     }
 
-    return 0;
 }
 
-
-
-void drawButton(RenderWindow& window, Button& button) {
-    if (button.isMouseOver(window)) {
-        Image img = Image();
-        img.loadFromFile("src\\buttons\\button2.png");
-        Texture texture = Texture();
-        texture.loadFromImage(img);
-        Sprite sprite = Sprite();
-        sprite.setTexture(texture);
-        sprite.setPosition(button.sprite.getPosition());
-        window.draw(sprite);
-    }
-    else {
-        window.draw(button.getSprite());
-    }
-}
 
 void drawText(RenderWindow& window, String text, Vector2f position, int number) {
     Font font;

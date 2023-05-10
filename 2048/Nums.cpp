@@ -15,11 +15,11 @@ vector<vector<vector<int>>> genNums(int level)
 			t.push_back(0);
 			t.push_back(x);
 			t.push_back(y);
-			x += 70;
+			x += 198;
 			temp.push_back(t);
 		}
 		x = 40;
-		y += 70;
+		y += 198;
 		nums.push_back(temp);
 		if (i == level - 1) {
 			temp.clear();

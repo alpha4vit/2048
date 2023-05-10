@@ -2,5 +2,8 @@
 #include"includes.h"
 #include"Nums.h"
 #include"move.h"
+#include"Button.h"
 
-void showPlayGround();
+
+int play();
+void drawButton(RenderWindow& window, Button& button);
