@@ -110,7 +110,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\sfml\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-system-s-d.lib;opengl32.lib;freetype.lib;gdi32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfml-audio-s-d.lib;sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-system-s-d.lib;opengl32.lib;freetype.lib;gdi32.lib;winmm.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -131,18 +131,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="2048.cpp" />
-    <ClCompile Include="Background.cpp" />
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="KeyChecker.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="move.cpp" />
     <ClCompile Include="Nums.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="Playground.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2048.h" />
-    <ClInclude Include="Background.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="includes.h" />
+    <ClInclude Include="KeyChecker.h" />
     <ClInclude Include="move.h" />
     <ClInclude Include="Nums.h" />
     <ClInclude Include="Object.h" />

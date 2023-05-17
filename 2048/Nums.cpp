@@ -7,6 +7,13 @@ vector<vector<vector<int>>> genNums(int level)
 
 	// вектор представляет собой двухмерный массив, самый меньший веткор представляет собой одну клетку на поле, хранит в себе свое значение, значение по иксу, значение по игрику
 	vector<vector<vector<int>>> nums; 
+	int dist = 0;
+	switch (level) {
+	case 3: {dist = 198; break; }
+	case 4: {dist = 148; break; }
+	case 5: {dist = 118; break; }
+	default: break;
+	}
 	int x = 40; int y = 40;
 	for (int i = 0; i < level; ++i) {
 		vector<vector<int>> temp;
@@ -15,11 +22,12 @@ vector<vector<vector<int>>> genNums(int level)
 			t.push_back(0);
 			t.push_back(x);
 			t.push_back(y);
-			x += 198;
+			x += dist;
 			temp.push_back(t);
 		}
 		x = 40;
-		y += 198;
+		y += dist;
+
 		nums.push_back(temp);
 		if (i == level - 1) {
 			temp.clear();
@@ -47,17 +55,22 @@ void genFnum(vector<vector<vector<int>>>& nums)
 
 void newRandNum(vector<vector<vector<int>>>& nums)
 {
-	if (0 + rand() % 2) {
-		srand(time(NULL));
-		int x = rand() % (size(nums) - 1);
-		int y = rand() & (size(nums) - 1);
-		int attempts = 0;
-		while (nums[x][y][0] != 0 && attempts < 10) {
-			x = rand() % (size(nums) - 1);
-			y = rand() & (size(nums) - 1);
-			++attempts;
+
+	srand(time(NULL));
+	int x = rand() % (size(nums) - 1);
+	int y = rand() & (size(nums) - 1);
+	int attempts = 0;
+	bool fl = false;
+	while (attempts < 100) {
+		x = rand() % (size(nums) - 1);
+		y = rand() & (size(nums) - 1);
+		if (nums[x][y][0] == 0) {
+			fl = true;
+			break;
 		}
-		nums[x][y][0] = 2;
+		++attempts;
 	}
+	if (fl)
+		nums[x][y][0] = 2;
 }
 
