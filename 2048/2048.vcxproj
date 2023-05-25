@@ -138,6 +138,7 @@
     <ClCompile Include="Nums.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Playground.cpp" />
+    <ClCompile Include="text.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2048.h" />
