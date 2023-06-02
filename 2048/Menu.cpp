@@ -96,7 +96,7 @@ void MainMenu(RenderWindow& menu, Music& music) {
         drawText(menu, L"Œ Õ¿—", buttonAboutUs.getSprite().getPosition(), 3, buttonAboutUs.isMouseOver(menu) && !showOption);
         drawText(menu, to_string(LAST_RESULT), *new Vector2f(100, 100), 0, false);
         drawText(menu, to_string(BEST_RESULT), *new Vector2f(200, 100), 0, false);
-
+        menu.draw(title);
 
         if (showOption) {
             RectangleShape rect;
@@ -104,9 +104,9 @@ void MainMenu(RenderWindow& menu, Music& music) {
             rect.setFillColor(*new Color(255, 255, 255, 200)); 
             Font font;
             font.loadFromFile("ofont.ru_Bowler.ttf");
-            Text gameMode(L"CHOOSE GAME MODE ’”…", font, 62);
+            Text gameMode(L"¬€¡≈–»“≈ –≈∆»Ã", font, 62);
             gameMode.setFillColor(Color::Green);
-            gameMode.setPosition(*new Vector2f(130, 100));
+            gameMode.setPosition(*new Vector2f(180, 150));
             Text x3("3x3", font, 90);
             x3.setPosition(*new Vector2f(100, 400));
             x3.setFillColor(Color::Green);
@@ -147,7 +147,6 @@ void MainMenu(RenderWindow& menu, Music& music) {
             menu.draw(x5);
             menu.draw(gameMode);
         }
-        menu.draw(title);
         menu.display();
     }
 }
@@ -168,7 +167,7 @@ void settings(RenderWindow& settings, Music& music) {
     Object bg = *new Object("src\\bg\\bg2.jpg", *new Vector2f(0, 0));
     Object sliderLine = *new Object("src\\sliders\\line.png", *new Vector2f(150, 200));
     Object slider = *new Object("src\\sliders\\slider.png", convertFromVolumeToPosition(volume, sliderLine));
-    Object buttonExit = *new Object("src\\buttons\\home.png", *new Vector2f(770, 40));
+    
     while (settings.isOpen()) {
         Event ev;
         while (settings.pollEvent(ev)) {
@@ -177,23 +176,31 @@ void settings(RenderWindow& settings, Music& music) {
             }
         }
 
+        Object buttonExit = *new Object("src\\buttons\\home.png", *new Vector2f(770, 40));
+
         settings.clear(Color(255, 255, 255));
 
         settings.draw(bg.sprite);
-        settings.draw(buttonExit.sprite);
+        
         drawText(settings, "SETTINGS", *new Vector2f(400, 50), 0, false);
         settings.draw(sliderLine.sprite);
+        if (buttonExit.isMouseOver(settings)) {
+            buttonExit.sprite.setScale(1.05f, 1.05f);
+            buttonExit.sprite.setPosition(buttonExit.sprite.getPosition().x-2.f, buttonExit.sprite.getPosition().y-2.f);
+        }
+        settings.draw(buttonExit.sprite);
         if (Mouse::isButtonPressed(Mouse::Left)) {
             Vector2i mouseCoord = getMousePosition(settings, Mouse::getPosition());
-            if (sliderLine.isMouseOver(settings, 0)) {
+            if (sliderLine.isMouseOver(settings)) {
                 slider.sprite.setPosition(mouseCoord.x, sliderLine.sprite.getPosition().y-18);
                 volume = convertFromPositionToVolume(mouseCoord);
                 music.setVolume(volume);
             }
-            else if (buttonExit.isMouseOver(settings, 3)) {
+            else if (buttonExit.isMouseOver(settings)) {
                 MainMenu(settings, music);
             }
         }
+        settings.draw(buttonExit.sprite);
         settings.draw(slider.sprite);
         settings.display();
     }
@@ -206,12 +213,8 @@ int play(RenderWindow& game, Music& music, int state)
 
     
     Object bg = *new Object("src\\bg\\bg2.jpg", *new Vector2f(0, 0));
-    Object buttonRestart = *new Object("src\\buttons\\restart.png", *new Vector2f(870, 40));
-    Object buttonExit = *new Object("src\\buttons\\home.png", *new Vector2f(770, 40));
-    Object upArrow = *new Object("src\\buttons\\upArrow.png", *new Vector2f(450, 670));
-    Object downArrow = *new Object("src\\buttons\\downArrow1.png", *new Vector2f(450, 800));
-    Object leftArrow = *new Object("src\\buttons\\leftArrow1.png", *new Vector2f(320, 735));
-    Object rightArrow = *new Object("src\\buttons\\rightArrow1.png", *new Vector2f(580, 735));
+    
+    
 
     bool buttonPressed = false;
     bool keyPressed = false;
@@ -240,7 +243,42 @@ int play(RenderWindow& game, Music& music, int state)
                 game.close();
             }
         }
+
+
+        Object buttonRestart = *new Object("src\\buttons\\restart.png", *new Vector2f(870, 40));
+        Object buttonExit = *new Object("src\\buttons\\home.png", *new Vector2f(770, 40));
+        Object upArrow = *new Object("src\\buttons\\upArrow.png", *new Vector2f(450, 670));
+        Object downArrow = *new Object("src\\buttons\\downArrow1.png", *new Vector2f(450, 800));
+        Object leftArrow = *new Object("src\\buttons\\leftArrow1.png", *new Vector2f(320, 735));
+        Object rightArrow = *new Object("src\\buttons\\rightArrow1.png", *new Vector2f(580, 735));
+
         game.clear(Color(255, 255, 255));
+
+        if (buttonExit.isMouseOver(game)) {
+            buttonExit.sprite.setScale(1.05f, 1.05f);
+            buttonExit.sprite.setPosition(buttonExit.sprite.getPosition().x - 2.f, buttonExit.sprite.getPosition().y - 2.f);
+        }
+        else if (buttonRestart.isMouseOver(game)) {
+            buttonRestart.sprite.setScale(1.05f, 1.05f);
+            buttonRestart.sprite.setPosition(buttonRestart.sprite.getPosition().x - 2.f, buttonRestart.sprite.getPosition().y - 2.f);
+        }
+        else if (downArrow.isMouseOver(game)) {
+            downArrow.sprite.setScale(1.05f, 1.05f);
+            downArrow.sprite.setPosition(downArrow.sprite.getPosition().x - 2.f, downArrow.sprite.getPosition().y - 2.f);
+        }
+        else if (upArrow.isMouseOver(game)) {
+            upArrow.sprite.setScale(1.05f, 1.05f);
+            upArrow.sprite.setPosition(upArrow.sprite.getPosition().x - 2.f, upArrow.sprite.getPosition().y - 2.f);
+        }
+        else if (leftArrow.isMouseOver(game)) {
+            leftArrow.sprite.setScale(1.05f, 1.05f);
+            leftArrow.sprite.setPosition(leftArrow.sprite.getPosition().x - 2.f, leftArrow.sprite.getPosition().y - 2.f);
+        }
+        else if (rightArrow.isMouseOver(game)) {
+            rightArrow.sprite.setScale(1.05f, 1.05f);
+            rightArrow.sprite.setPosition(rightArrow.sprite.getPosition().x - 2.f, rightArrow.sprite.getPosition().y - 2.f);
+        }
+
         game.draw(bg.sprite);
         game.draw(buttonRestart.sprite);
         game.draw(buttonExit.sprite);
@@ -293,28 +331,30 @@ int play(RenderWindow& game, Music& music, int state)
 
         }
 
+       
+
         if (Mouse::isButtonPressed(Mouse::Left) && !buttonPressed && !isGameOver) {
             buttonPressed = true;
-            if (buttonRestart.isMouseOver(game, 3)) {
+            if (buttonRestart.isMouseOver(game)) {
                 play(game, music, state);
             }
-            else if (buttonExit.isMouseOver(game, 3)) {
+            else if (buttonExit.isMouseOver(game)) {
                 writeToFileResults(CURRENT_RESULT);
                 MainMenu(game, music);
             }
-            else if (upArrow.isMouseOver(game, 2)) {
+            else if (upArrow.isMouseOver(game)) {
                 if (MoveUp(nums, CURRENT_RESULT))
                     newRandNum(nums);
             }
-            else if (leftArrow.isMouseOver(game, 2)) {
+            else if (leftArrow.isMouseOver(game)) {
                 if (MoveLeft(nums, CURRENT_RESULT))
                     newRandNum(nums);
             }
-            else if (rightArrow.isMouseOver(game, 2)) {
+            else if (rightArrow.isMouseOver(game)) {
                 if (MoveRight(nums, CURRENT_RESULT))
                     newRandNum(nums);
             }
-            else if (downArrow.isMouseOver(game, 2)) {
+            else if (downArrow.isMouseOver(game)) {
                 if (MoveDown(nums, CURRENT_RESULT))
                     newRandNum(nums);
             }
@@ -565,9 +605,9 @@ Text drawText(RenderWindow& window, String text, Vector2f position, int number, 
     switch (number)
     {
     case 0: {text1.setPosition(position); break; }
-    case 1: {text1.setPosition(*new Vector2f(position.x + 140, position.y + 25)); break; }
-    case 2: {text1.setPosition(*new Vector2f(position.x + 85, position.y + 25)); break; }
-    case 3: {text1.setPosition(*new Vector2f(position.x + 85, position.y + 25)); break; }
+    case 1: {text1.setPosition(*new Vector2f(position.x + 115, position.y + 25)); break; }
+    case 2: {text1.setPosition(*new Vector2f(position.x + 55, position.y + 25)); break; }
+    case 3: {text1.setPosition(*new Vector2f(position.x + 130, position.y + 25)); break; }
     default: break;
     }
     window.draw(text1);
@@ -586,19 +626,11 @@ void readResults(int& LAST_RESULT, int& BEST_RESULT) {
 
 bool isMouseOver(RenderWindow& window, Text text)
 {
-    int sizeX = 165;
-    int sizeY = 67;
-    if (text.getString() == "PLAY  AGAIN") {
-        sizeX = 450;
-    }
-    else if (text.getString() == "GAME OVER") {
-        sizeX = 710;
-        sizeY = 103;
-    }
-    else if (text.getString() == "3x3" || text.getString() == "4x4" || text.getString() == "5x5") {
-        sizeX = 210;
-        sizeY = 90;
-    }
+    int sizeX = text.getLocalBounds().width+5;
+    int sizeY = text.getLocalBounds().height+27;
+
+    
+    cout << sizeY << endl;
     Vector2i mousePos = Mouse::getPosition(window);
     if (mousePos.x > text.getPosition().x && mousePos.x <text.getPosition().x + sizeX
         && mousePos.y > text.getPosition().y && mousePos.y < text.getPosition().y + sizeY)
@@ -606,27 +638,4 @@ bool isMouseOver(RenderWindow& window, Text text)
     else
         return false;
 }
-
-
-/*if (start_time == 0) {
-                       start_time = clock();
-                   }
-                   clock_t current_time = clock();
-                   int transparency = 255;
-                   RectangleShape rect;
-                   rect.setPosition(*new Vector2f(0, 0));
-                   rect.setSize(*new Vector2f(1000, 1000));
-                   rect.setFillColor(Color(255, 255, 255, transparency));
-                   if (double(current_time - start_time) / CLOCKS_PER_SEC * 1000.0 < 1000) {
-                       --transparency;
-                       rect.setFillColor(Color(255, 255, 255, transparency));
-                   }
-                   else {
-                       play(menu, music, 3);
-                       ++transparency;
-                       rect.setFillColor(Color(255, 255, 255, transparency));
-                   }
-                   if (double(current_time - start_time) / CLOCKS_PER_SEC * 1000.0 > 1000){
-                       start_time = 0;
-                   }*/
 

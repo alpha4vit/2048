@@ -17,30 +17,12 @@ Object::Object()
 {
 }
 
-bool Object::isMouseOver(RenderWindow& window, int state)
+bool Object::isMouseOver(RenderWindow& window)
 {
-    int xSize = 600;
-    int ySize = 160;
-    switch (state)
-    {
-    case 1: {
-        xSize = 250;
-        ySize = 76; break;
-    }
-    case 2: {
-        ySize = 125;
-        xSize = 125; break;
-    }
-    case 3: {
-        xSize = 80;
-        ySize = 80; break;
-    }
-    default:
-        break;
-    }
+    
     Vector2i mousePos = Mouse::getPosition(window);
-    if (mousePos.x > this->sprite.getPosition().x && mousePos.x < this->sprite.getPosition().x + xSize
-        && mousePos.y > this->sprite.getPosition().y && mousePos.y < this->sprite.getPosition().y + ySize)
+    if (mousePos.x > this->sprite.getPosition().x && mousePos.x < this->sprite.getPosition().x + this->sprite.getLocalBounds().width
+        && mousePos.y > this->sprite.getPosition().y && mousePos.y < this->sprite.getPosition().y + this->sprite.getLocalBounds().height)
         return true;
     else
         return false;
