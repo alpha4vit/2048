@@ -12,7 +12,7 @@ public:
 	Object(string path, Vector2f position);
 	Object();
 
-	bool isMouseOver(RenderWindow& window);
+	bool isMouseOver(RenderWindow& window, int type);
 };
 
 

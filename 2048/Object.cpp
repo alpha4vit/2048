@@ -17,11 +17,16 @@ Object::Object()
 {
 }
 
-bool Object::isMouseOver(RenderWindow& window)
+bool Object::isMouseOver(RenderWindow& window, int type)
 {
-    
+    int width = this->sprite.getLocalBounds().width;
+    int posX = this->sprite.getPosition().x;
+    if (type == 1) {
+        width -= 80;
+        posX += 40;
+    }
     Vector2i mousePos = Mouse::getPosition(window);
-    if (mousePos.x > this->sprite.getPosition().x && mousePos.x < this->sprite.getPosition().x + this->sprite.getLocalBounds().width
+    if (mousePos.x > posX && mousePos.x <= posX + width
         && mousePos.y > this->sprite.getPosition().y && mousePos.y < this->sprite.getPosition().y + this->sprite.getLocalBounds().height)
         return true;
     else
