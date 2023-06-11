@@ -196,7 +196,7 @@ int main() {
         if (showOption){
             RectangleShape rect;
             rect.setSize(*new Vector2f(1000, 1000));
-            rect.setFillColor(*new Color(255, 255, 255, 200));
+            rect.setFillColor(*new Color(255, 255, 255, 230));
             Font font;
             font.loadFromFile("ofont.ru_Bowler.ttf");
             Text gameMode(L"¬€¡≈–»“≈ –≈∆»Ã", font, 62);
