@@ -26,7 +26,7 @@ enum windows {
 };
 
 int main() {
-    RenderWindow window(VideoMode(1000, 1000), "2048", Style::Default, ContextSettings(0, 0, 8));
+    RenderWindow window(VideoMode(1000, 1000), L"—ÎËˇÌËÂ ˜ËÒÂÎ", Style::Default, ContextSettings(0, 0, 8));
     Music music;
     music.openFromFile("src\\sounds\\backsound.ogg");
     music.play();
@@ -40,10 +40,11 @@ int main() {
 
     //SETTING ICON
     Image icon = *new Image();
-    icon.loadFromFile("src\\logo\\logo.png");
-    window.setIcon(427, 427, icon.getPixelsPtr());
+    icon.loadFromFile("src\\logo\\logo2.png");
+    window.setIcon(300, 300, icon.getPixelsPtr());
     Object bg = *new Object("src\\bg\\bg2.jpg", *new Vector2f(0, 0));
     Font font;
+    font.loadFromFile("ofont.ru_Bowler.ttf");
     bool isMenu = true;
     bool isSettings = false;
     bool showOption = false;
@@ -52,9 +53,9 @@ int main() {
 
 
     //menu attributes
-    Button buttonPlay = *new Button(*new Vector2f(300, 500));
-    Button buttonSettings = *new Button(*new Vector2f(300, 665));
-    Button buttonAboutUs = *new Button(*new Vector2f(300, 820));
+    //Button buttonPlay = *new Button(*new Vector2f(300, 500));
+    //Button buttonSettings = *new Button(*new Vector2f(300, 665));
+    //Button buttonAboutUs = *new Button(*new Vector2f(300, 820));
 
 
 
@@ -91,7 +92,13 @@ int main() {
         Event ev;
         while (window.pollEvent(ev)) {
             if (ev.type == Event::Closed) {
+                writeToFileResults(CURRENT_RESULT);
                 window.close();
+            }
+            if (ev.type == Event::MouseButtonReleased) {
+                if (ev.key.code == Mouse::Left) {
+                    buttonPressed = false;
+                }
             }
         }
 
@@ -102,86 +109,63 @@ int main() {
 
 
         if (isMenu) {
-            
+            readResults(LAST_RESULT, BEST_RESULT);
+            Text playText(L"»√–¿“‹", font, 72);
+            playText.setFillColor(Color::White);
+            playText.setPosition(340, 500);
+            Text settingsText(L"Õ¿—“–Œ… »", font, 72);
+            settingsText.setFillColor(Color::White);
+            settingsText.setPosition(250, 665);
+            Text aboutText(L"Œ Õ¿—", font, 72);
+            aboutText.setFillColor(Color::White);
+            aboutText.setPosition(350, 820);
             Text title(L"CÀ»ﬂÕ»≈ ◊»—≈À", font, 62);
             title.setFillColor(Color::Black);
             title.setPosition(*new Vector2f(100, 100));
+            Object logo("src\\logo\\logo1.png", *new Vector2f(150, 150));
 
-
-            if (Mouse::isButtonPressed(Mouse::Left)) {
-                if (buttonPlay.isMouseOver(window)) {
+            if (Mouse::isButtonPressed(Mouse::Left) && !buttonPressed) {
+                if (isMouseOver(window, playText) && !showOption) {
                     transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = menuOption;
                 }
-                else if (buttonSettings.isMouseOver(window)) {
+                else if (isMouseOver(window, settingsText) && !showOption) {
                     transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = settingsWindow;
                 }
                 else if (!transition) {
                     showOption = false;
                 }
+                buttonPressed = true;
+            }
+            if (!showOption) {
+                if (isMouseOver(window, playText)) {
+                    Vector2f pos = playText.getPosition();
+                    playText.setFillColor(Color(117, 117, 117));
+                    playText.setScale(*new Vector2f(1.05, 1.05));
+                    playText.setPosition(pos.x - 5, pos.y - 5);
+                }
+                if (isMouseOver(window, settingsText)) {
+                    Vector2f pos = settingsText.getPosition();
+                    settingsText.setFillColor(Color(117, 117, 117));
+                    settingsText.setScale(*new Vector2f(1.05, 1.05));
+                    settingsText.setPosition(pos.x - 5, pos.y - 5);
+                }
+                if (isMouseOver(window, aboutText)) {
+                    Vector2f pos = aboutText.getPosition();
+                    aboutText.setFillColor(Color(117, 117, 117));
+                    aboutText.setScale(*new Vector2f(1.05, 1.05));
+                    aboutText.setPosition(pos.x - 5, pos.y - 5);
+                }
             }
 
-            drawButton(window, buttonPlay, showOption);
-            drawButton(window, buttonSettings, showOption);
-            drawButton(window, buttonAboutUs, showOption);
-            drawText(window, L"»√–¿“‹", buttonPlay.getSprite().getPosition(), 1, buttonPlay.isMouseOver(window) && !showOption);
-            drawText(window, L"Õ¿—“–Œ… »", buttonSettings.getSprite().getPosition(), 2, buttonSettings.isMouseOver(window) && !showOption);
-            drawText(window, L"Œ Õ¿—", buttonAboutUs.getSprite().getPosition(), 3, buttonAboutUs.isMouseOver(window) && !showOption);
+
+            window.draw(playText);
+            window.draw(settingsText);
+            window.draw(aboutText);
             drawText(window, to_string(LAST_RESULT), *new Vector2f(100, 100), 0, false);
             drawText(window, to_string(BEST_RESULT), *new Vector2f(200, 100), 0, false);
-            window.draw(title);
+            //window.draw(title);
+            window.draw(logo.sprite);
 
-            if (showOption) {
-                RectangleShape rect;
-                rect.setSize(*new Vector2f(1000, 1000));
-                rect.setFillColor(*new Color(255, 255, 255, 200));
-                Font font;
-                font.loadFromFile("ofont.ru_Bowler.ttf");
-                Text gameMode(L"¬€¡≈–»“≈ –≈∆»Ã", font, 62);
-                gameMode.setFillColor(Color::Green);
-                gameMode.setPosition(*new Vector2f(180, 150));
-                Text x3("3x3", font, 90);
-                x3.setPosition(*new Vector2f(100, 400));
-                x3.setFillColor(Color::Green);
-                Text x4("4x4", font, 90);
-                x4.setPosition(*new Vector2f(400, 400));
-                x4.setFillColor(Color::Green);
-                Text x5("5x5", font, 90);
-                x5.setPosition(*new Vector2f(700, 400));
-                x5.setFillColor(Color::Green);
-
-                if (isMouseOver(window, x3)) {
-                    x3.setFillColor(Color(117, 117, 117));
-                    x3.setScale(*new Vector2f(1.05, 1.05));
-                    x3.setPosition(95, 395);
-                }
-                if (isMouseOver(window, x4)) {
-                    x4.setFillColor(Color(117, 117, 117));
-                    x4.setScale(*new Vector2f(1.05, 1.05));
-                    x4.setPosition(395, 395);
-                }
-                if (isMouseOver(window, x5)) {
-                    x5.setFillColor(Color(117, 117, 117));
-                    x5.setScale(*new Vector2f(1.05, 1.05));
-                    x5.setPosition(695, 395);
-                }
-
-                if (Mouse::isButtonPressed(Mouse::Left)) {
-                    if (isMouseOver(window, x3)) {
-                        transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = gameWindow; gameState = 3;
-                    }
-                    else if (isMouseOver(window, x4)) {
-                        transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = gameWindow; gameState = 4;
-                    }
-                    else if (isMouseOver(window, x5)) {
-                        transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = gameWindow; gameState = 5;
-                    }
-                }
-                window.draw(rect);
-                window.draw(x3);
-                window.draw(x4);
-                window.draw(x5);
-                window.draw(gameMode);
-            }
         }
         if (isSettings) {
             Object buttonExit = *new Object("src\\buttons\\home.png", *new Vector2f(770, 40));
@@ -218,47 +202,41 @@ int main() {
             Text gameMode(L"¬€¡≈–»“≈ –≈∆»Ã", font, 62);
             gameMode.setFillColor(Color::Green);
             gameMode.setPosition(*new Vector2f(180, 150));
-            Text x3("3x3", font, 90);
-            x3.setPosition(*new Vector2f(100, 400));
-            x3.setFillColor(Color::Green);
-            Text x4("4x4", font, 90);
-            x4.setPosition(*new Vector2f(400, 400));
-            x4.setFillColor(Color::Green);
-            Text x5("5x5", font, 90);
-            x5.setPosition(*new Vector2f(700, 400));
-            x5.setFillColor(Color::Green);
-
-            if (isMouseOver(window, x3)) {
-                x3.setFillColor(Color(117, 117, 117));
-                x3.setScale(*new Vector2f(1.05, 1.05));
-                x3.setPosition(95, 395);
+            Object x3("src\\buttons\\3x3.png", *new Vector2f(350, 300));
+            Object x4("src\\buttons\\4x4.png", *new Vector2f(350, 520));
+            Object x5("src\\buttons\\5x5.png", *new Vector2f(350, 740));
+            
+            if (x3.isMouseOver(window, 0)) {
+                Vector2f pos = x3.sprite.getPosition();
+                x3.sprite.setScale(1.05, 1.05);
+                x3.sprite.setPosition(pos.x - 5, pos.y - 5);
             }
-            if (isMouseOver(window, x4)) {
-                x4.setFillColor(Color(117, 117, 117));
-                x4.setScale(*new Vector2f(1.05, 1.05));
-                x4.setPosition(395, 395);
+            else if (x4.isMouseOver(window, 0)) {
+                Vector2f pos = x4.sprite.getPosition();
+                x4.sprite.setScale(1.05, 1.05);
+                x4.sprite.setPosition(pos.x - 5, pos.y - 5);
             }
-            if (isMouseOver(window, x5)) {
-                x5.setFillColor(Color(117, 117, 117));
-                x5.setScale(*new Vector2f(1.05, 1.05));
-                x5.setPosition(695, 395);
+            else if (x5.isMouseOver(window, 0)) {
+                Vector2f pos = x5.sprite.getPosition();
+                x5.sprite.setScale(1.05, 1.05);
+                x5.sprite.setPosition(pos.x - 5, pos.y - 5);
             }
 
             if (Mouse::isButtonPressed(Mouse::Left)) {
-                if (isMouseOver(window, x3)) {
+                if (x3.isMouseOver(window, 0)) {
                     transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = gameWindow; state = 3;
                 }
-                else if (isMouseOver(window, x4)) {
+                else if (x4.isMouseOver(window, 0)) {
                     transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = gameWindow; state = 4;
                 }
-                else if (isMouseOver(window, x5)) {
+                else if (x5.isMouseOver(window, 0)) {
                     transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = gameWindow; state = 5;
                 }
             }
             window.draw(rect);
-            window.draw(x3);
-            window.draw(x4);
-            window.draw(x5);
+            window.draw(x3.sprite);
+            window.draw(x4.sprite);
+            window.draw(x5.sprite);
             window.draw(gameMode);
         }
         if (isGame) {
@@ -269,7 +247,7 @@ int main() {
             Object leftArrow = *new Object("src\\buttons\\leftArrow1.png", *new Vector2f(320, 735));
             Object rightArrow = *new Object("src\\buttons\\rightArrow1.png", *new Vector2f(580, 735));
             
-
+            if (!isWinner && !isGameOver)
             if (buttonExit.isMouseOver(window, 0)) {
                 buttonExit.sprite.setScale(1.05f, 1.05f);
                 buttonExit.sprite.setPosition(buttonExit.sprite.getPosition().x - 2.f, buttonExit.sprite.getPosition().y - 2.f);
@@ -352,11 +330,11 @@ int main() {
             if (Mouse::isButtonPressed(Mouse::Left) && !buttonPressed && !isGameOver) {
                 buttonPressed = true;
                 if (buttonRestart.isMouseOver(window, 0)) {
-                    transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = gameWindow; fstart = true;
+                    transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = gameWindow;
                 }
                 else if (buttonExit.isMouseOver(window, 0)) {
                     writeToFileResults(CURRENT_RESULT);
-                    transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = menuWindow; fstart = true;
+                    transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = menuWindow;
                 }
                 else if (upArrow.isMouseOver(window, 0)) {
                     if (MoveUp(nums, CURRENT_RESULT))
@@ -381,73 +359,50 @@ int main() {
             if (isGameOver || isWinner) {
 
                 // GENERATING TEXT
-
+                Object textGameOver1("src\\buttons\\over.png", *new Vector2f(150, 50));
                 Font font;
                 font.loadFromFile("ofont.ru_Bowler.ttf");
                 RectangleShape rect;
                 rect.setSize(*new Vector2f(1000, 1000));
                 rect.setFillColor(*new Color(255, 255, 255, 230));
-                Text textAgain("PLAY  AGAIN", font, 64);
-                textAgain.setPosition(*new Vector2f(100, 500));
-                Text textExit("EXIT", font, 64);
-                textExit.setPosition(*new Vector2f(680, 500));
-                Text textGameOver;
-                textGameOver.setFont(font);
-                textGameOver.setCharacterSize(105);
-                textGameOver.setPosition(*new Vector2f(150, 60));
-                if (isGameOver) {
-                    textGameOver.setString("GAME OVER");
-                }
-                else {
-                    textGameOver.setString("YOU'RE WINNER");
-                }
-                if (!isMouseOver(window, textAgain)) {
-                    textAgain.setFillColor(Color(117, 117, 117));
-                    textAgain.setPosition(*new Vector2f(100, 500));
-                }
-                else {
+                Text textAgain(L"Õ‡˜‡Ú¸ ÒÌ‡˜‡Î‡", font, 64);
+                textAgain.setPosition(*new Vector2f(200, 600));
+                textAgain.setFillColor(Color(117, 117, 117));
+                Object toMenu("src\\buttons\\menu.png", *new Vector2f(380, 780));
+                if (isMouseOver(window, textAgain)) {
+                    Vector2f pos = textAgain.getPosition();
                     textAgain.setScale(*new Vector2f(1.05, 1.05));
-                    textAgain.setPosition(*new Vector2f(95, 495));
+                    textAgain.setPosition(*new Vector2f(pos.x-5, pos.y-5));
                     textAgain.setFillColor(Color::Red);
                 }
-                if (!isMouseOver(window, textExit)) {
-                    textExit.setFillColor(Color(117, 117, 117));
+                if (toMenu.isMouseOver(window, 0)) {
+                    Vector2f pos = toMenu.sprite.getPosition();
+                    toMenu.sprite.setScale(*new Vector2f(1.05, 1.05));
+                    toMenu.sprite.setPosition(*new Vector2f(pos.x - 5, pos.y - 5));
                 }
-                else {
-                    textExit.setScale(*new Vector2f(1.05, 1.05));
-                    textExit.setPosition(*new Vector2f(675, 495));
-                    textExit.setFillColor(Color::Red);
-                }
-                if (!isMouseOver(window, textGameOver)) {
-                    textGameOver.setFillColor(Color::Red);
-                }
-                else {
-                    textGameOver.setScale(*new Vector2f(1.05, 1.05));
-                    textGameOver.setPosition(*new Vector2f(145, 55));
-                    textGameOver.setFillColor(Color::Blue);
-                }
-
+                
 
                 if (Mouse::isButtonPressed(Mouse::Left)) {
                     if (isMouseOver(window, textAgain)) {
                         writeToFileResults(CURRENT_RESULT);
-                        transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = gameWindow; fstart = true;
+                        transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = gameWindow;
                     }
-                    else if (isMouseOver(window, textExit)) {
+                    else if (toMenu.isMouseOver(window, 0)) {
                         writeToFileResults(CURRENT_RESULT);
-                        transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = menuWindow; fstart = true;
+                        transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = menuWindow;
                     }
                 }
 
 
                 window.draw(rect);
                 window.draw(textAgain);
-                window.draw(textExit);
-                window.draw(textGameOver);
+                window.draw(toMenu.sprite);
+                window.draw(textGameOver1.sprite);
             }
         }
         if (transition) {
             int duration = 2;
+            writeToFileResults(CURRENT_RESULT);
             if (!transition) {
                 transition = true;
                 transitionStart = clock.getElapsedTime().asSeconds();
@@ -467,20 +422,25 @@ int main() {
 
                     switch (windowType)
                     {
-                    case menuOption: { showOption = true;  break; }
+                    case menuOption: { showOption = true; break; }
                     case settingsWindow: { isSettings = true;break; }
                     case menuWindow: { isMenu = true; break; }
                     case gameWindow: { 
-                        if (fstart)
-                        nums = genNums(state); 
-                        genFnum(nums); 
-                        isGame = true; break; }
+                        isGame = true;
+                        if (fstart) {
+                            nums = genNums(state);
+                            genFnum(nums);
+                            fstart = false;
+                           // nums[2][2][0] = 2048;
+                        }
+                        break; }
                     default:
                         break;
                     }
                     alpha = 255 - ((transitionTime - (duration / 2)) / (duration / 2)) * 255;
                 }
                 else {
+                    fstart = true;
                     transition = false;
                 }
             }
@@ -612,14 +572,14 @@ Vector2f convertFromVolumeToPosition(int volume, Object sliderLine) {
 
 
 
-Text drawText(RenderWindow& window, String text, Vector2f position, int number, bool isMouseOver) {
+Text drawText(RenderWindow& window, String text, Vector2f position, int number, bool isOption) {
     Font font;
     font.loadFromFile("font1.ttf");
     Text text1(text, font, 40);
-    if (!isMouseOver)
-        text1.setFillColor(Color::White);
-    else
-        text1.setFillColor(Color(117, 117, 117));
+    text1.setFillColor(Color(255, 255, 255));
+    if (isMouseOver(window, text1)) {
+        text1.setFillColor(Color(176, 176, 176));
+    }
     text1.setStyle(sf::Text::Bold);
     switch (number)
     {
