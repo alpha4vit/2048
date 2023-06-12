@@ -5,21 +5,20 @@
 #include"move.h"
 #include"Nums.h"
 #include<SFML/Audio/Music.hpp>
-#include"KeyChecker.h"
 
-Text drawText(RenderWindow& window, String text, Vector2f position, int number, bool isMouseOver);
-void readResults(int& LAST_RESULT, int& BEST_RESULT);
-int readVolumeFromFile();
-Vector2i getMousePosition(RenderWindow& window, Vector2i position);
-int convertFromPositionToVolume(Vector2i position);
-Vector2f convertFromVolumeToPosition(int volume, Object sliderLine);
-void writeVolumeToFile(int volume);
-void drawBar(RenderWindow& window, vector<int> num, int state);
-void drawPlayGround(RenderWindow& window, int state);
-void drawButton(RenderWindow& window, Button& button, bool isOption);
-void showCurrentResult(RenderWindow& window, int CURRENT_RESULT, int BEST_RESULT);
-void writeToFileResults(int LAST_RESULT);
-bool isMouseOver(RenderWindow& window, Text text);
+    Text drawText(RenderWindow& window, String text, Vector2f position, int number, bool isMouseOver);
+    void readResults(int& LAST_RESULT, int& BEST_RESULT);
+    int readVolumeFromFile();
+    Vector2i getMousePosition(RenderWindow& window, Vector2i position);
+    int convertFromPositionToVolume(Vector2i position);
+    Vector2f convertFromVolumeToPosition(int volume, Object sliderLine);
+    void writeVolumeToFile(int volume);
+    void drawBar(RenderWindow& window, vector<int> num, int state);
+    void drawPlayGround(RenderWindow& window, int state);
+
+    void showCurrentResult(RenderWindow& window, int CURRENT_RESULT, int BEST_RESULT);
+    void writeToFileResults(int LAST_RESULT);
+    bool isMouseOver(RenderWindow& window, Text text);
 
 enum windows {
     menuWindow, settingsWindow, gameWindow, menuOption
@@ -53,9 +52,9 @@ int main() {
 
 
     //menu attributes
-    //Button buttonPlay = *new Button(*new Vector2f(300, 500));
-    //Button buttonSettings = *new Button(*new Vector2f(300, 665));
-    //Button buttonAboutUs = *new Button(*new Vector2f(300, 820));
+    Object settingsButton = *new Object("src\\buttons\\settingsButton.png", *new Vector2f(300, 655));
+    Object playButton = *new Object("src\\buttons\\playButton.png", *new Vector2f(350, 500));
+
 
 
 
@@ -72,8 +71,9 @@ int main() {
 
 
     //settings attributes
-    Object sliderLine = *new Object("src\\sliders\\line.png", *new Vector2f(150, 200));
+    Object sliderLine = *new Object("src\\sliders\\line.png", *new Vector2f(150, 250));
     Object slider = *new Object("src\\sliders\\slider.png", convertFromVolumeToPosition(volume, sliderLine));
+    Object title = *new Object("src\\buttons\\settings.png", *new Vector2f(200, 0));
 
     //game attributes
     int state;
@@ -87,6 +87,7 @@ int main() {
     bool isWinner = false;
     bool fstart = true;
     vector<vector<vector<int>>> nums;
+    bool firstMove = false;
 
     while (window.isOpen()) {
         Event ev;
@@ -119,9 +120,6 @@ int main() {
             Text aboutText(L"Œ Õ¿—", font, 72);
             aboutText.setFillColor(Color::White);
             aboutText.setPosition(350, 820);
-            Text title(L"CÀ»ﬂÕ»≈ ◊»—≈À", font, 62);
-            title.setFillColor(Color::Black);
-            title.setPosition(*new Vector2f(100, 100));
             Object logo("src\\logo\\logo1.png", *new Vector2f(150, 150));
 
             if (Mouse::isButtonPressed(Mouse::Left) && !buttonPressed) {
@@ -158,18 +156,17 @@ int main() {
             }
 
 
-            window.draw(playText);
-            window.draw(settingsText);
+            window.draw(playButton.sprite);
+            window.draw(settingsButton.sprite);
             window.draw(aboutText);
             drawText(window, to_string(LAST_RESULT), *new Vector2f(100, 100), 0, false);
             drawText(window, to_string(BEST_RESULT), *new Vector2f(200, 100), 0, false);
-            //window.draw(title);
             window.draw(logo.sprite);
 
         }
         if (isSettings) {
-            Object buttonExit = *new Object("src\\buttons\\home.png", *new Vector2f(770, 40));
-            drawText(window, "SETTINGS", *new Vector2f(400, 50), 0, false);
+            //Object audioLogo = *new Object("src\\buttons\\audio.png", *new Vector2f(60, 230));
+            Object buttonExit = *new Object("src\\buttons\\home.png", *new Vector2f(870, 40));
             window.draw(sliderLine.sprite);
             if (buttonExit.isMouseOver(window, 0)) {
                 buttonExit.sprite.setScale(1.05f, 1.05f);
@@ -191,21 +188,20 @@ int main() {
             }
             window.draw(buttonExit.sprite);
             window.draw(slider.sprite);
+            window.draw(title.sprite);
+           // window.draw(audioLogo.sprite);
             writeVolumeToFile(volume);
         }
         if (showOption){
             RectangleShape rect;
             rect.setSize(*new Vector2f(1000, 1000));
             rect.setFillColor(*new Color(255, 255, 255, 230));
-            Font font;
-            font.loadFromFile("ofont.ru_Bowler.ttf");
-            Text gameMode(L"¬€¡≈–»“≈ –≈∆»Ã", font, 62);
-            gameMode.setFillColor(Color::Green);
-            gameMode.setPosition(*new Vector2f(180, 150));
+            Object textChoose("src\\buttons\\chooseState.png", *new Vector2f(50, 40));
             Object x3("src\\buttons\\3x3.png", *new Vector2f(350, 300));
             Object x4("src\\buttons\\4x4.png", *new Vector2f(350, 520));
             Object x5("src\\buttons\\5x5.png", *new Vector2f(350, 740));
-            
+            Object set = *new Object("src\\buttons\\settingsButton.png", *new Vector2f(300, 900));
+
             if (x3.isMouseOver(window, 0)) {
                 Vector2f pos = x3.sprite.getPosition();
                 x3.sprite.setScale(1.05, 1.05);
@@ -232,12 +228,16 @@ int main() {
                 else if (x5.isMouseOver(window, 0)) {
                     transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = gameWindow; state = 5;
                 }
+                else if (set.isMouseOver(window, 0)) {
+                    transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = gameWindow; state = 6;
+                }
             }
             window.draw(rect);
             window.draw(x3.sprite);
             window.draw(x4.sprite);
             window.draw(x5.sprite);
-            window.draw(gameMode);
+            window.draw(textChoose.sprite);
+            window.draw(set.sprite);
         }
         if (isGame) {
             Object buttonRestart = *new Object("src\\buttons\\restart.png", *new Vector2f(870, 40));
@@ -272,6 +272,7 @@ int main() {
                 rightArrow.sprite.setScale(1.05f, 1.05f);
                 rightArrow.sprite.setPosition(rightArrow.sprite.getPosition().x - 2.f, rightArrow.sprite.getPosition().y - 2.f);
             }
+            
 
             window.draw(bg.sprite);
             window.draw(buttonRestart.sprite);
@@ -281,7 +282,7 @@ int main() {
             window.draw(leftArrow.sprite);
             window.draw(rightArrow.sprite);
             drawPlayGround(window, state);
-
+            cout << state << endl;
 
             for (int i = 0; i < size(nums); ++i) {
                 for (int j = 0; j < size(nums[i]); ++j) {
@@ -306,21 +307,25 @@ int main() {
                     keyPressed = true;
                     if (MoveRight(nums, CURRENT_RESULT))
                         newRandNum(nums);
+                    firstMove = true;
                 }
                 else if (Keyboard::isKeyPressed(Keyboard::A)) {
                     keyPressed = true;
                     if (MoveLeft(nums, CURRENT_RESULT))
                         newRandNum(nums);
+                    firstMove = true;
                 }
                 else if (Keyboard::isKeyPressed(Keyboard::S)) {
                     keyPressed = true;
                     if (MoveDown(nums, CURRENT_RESULT))
                         newRandNum(nums);
+                    firstMove = true;
                 }
                 else if (Keyboard::isKeyPressed(Keyboard::W)) {
                     keyPressed = true;
                     if (MoveUp(nums, CURRENT_RESULT))
                         newRandNum(nums);
+                    firstMove = true;
                 }
 
             }
@@ -330,50 +335,59 @@ int main() {
             if (Mouse::isButtonPressed(Mouse::Left) && !buttonPressed && !isGameOver) {
                 buttonPressed = true;
                 if (buttonRestart.isMouseOver(window, 0)) {
-                    transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = gameWindow;
+                    transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = gameWindow; firstMove = false;
                 }
                 else if (buttonExit.isMouseOver(window, 0)) {
                     writeToFileResults(CURRENT_RESULT);
-                    transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = menuWindow;
+                    transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = menuWindow; firstMove = false;
                 }
                 else if (upArrow.isMouseOver(window, 0)) {
-                    if (MoveUp(nums, CURRENT_RESULT))
-                        newRandNum(nums);
+                    {
+                        if (MoveUp(nums, CURRENT_RESULT))
+                            newRandNum(nums);
+                        firstMove = true;
+                    }
                 }
                 else if (leftArrow.isMouseOver(window, 0)) {
-                    if (MoveLeft(nums, CURRENT_RESULT))
-                        newRandNum(nums);
+                    {
+                        if (MoveLeft(nums, CURRENT_RESULT))
+                            newRandNum(nums);
+                        firstMove = true;
+                    }
                 }
                 else if (rightArrow.isMouseOver(window, 0)) {
-                    if (MoveRight(nums, CURRENT_RESULT))
-                        newRandNum(nums);
+                    {
+                        if (MoveRight(nums, CURRENT_RESULT))
+                            newRandNum(nums);
+                        firstMove = true;
+                    }
                 }
                 else if (downArrow.isMouseOver(window, 0)) {
-                    if (MoveDown(nums, CURRENT_RESULT))
-                        newRandNum(nums);
+                    {
+                        if (MoveDown(nums, CURRENT_RESULT))
+                            newRandNum(nums);
+                        firstMove = true;
+                    }
                 }
+                
             }
             showCurrentResult(window, CURRENT_RESULT, BEST_RESULT);
-
 
             if (isGameOver || isWinner) {
 
                 // GENERATING TEXT
-                Object textGameOver1("src\\buttons\\over.png", *new Vector2f(150, 50));
+                Object textGameOver("src\\buttons\\over.png", *new Vector2f(150, 50));
                 Font font;
                 font.loadFromFile("ofont.ru_Bowler.ttf");
                 RectangleShape rect;
                 rect.setSize(*new Vector2f(1000, 1000));
                 rect.setFillColor(*new Color(255, 255, 255, 230));
-                Text textAgain(L"Õ‡˜‡Ú¸ ÒÌ‡˜‡Î‡", font, 64);
-                textAgain.setPosition(*new Vector2f(200, 600));
-                textAgain.setFillColor(Color(117, 117, 117));
+                Object restart("src\\buttons\\snachala.png", *new Vector2f(200, 600));
                 Object toMenu("src\\buttons\\menu.png", *new Vector2f(380, 780));
-                if (isMouseOver(window, textAgain)) {
-                    Vector2f pos = textAgain.getPosition();
-                    textAgain.setScale(*new Vector2f(1.05, 1.05));
-                    textAgain.setPosition(*new Vector2f(pos.x-5, pos.y-5));
-                    textAgain.setFillColor(Color::Red);
+                if (restart.isMouseOver(window, 0)) {
+                    Vector2f pos = restart.sprite.getPosition();
+                    restart.sprite.setScale(*new Vector2f(1.025, 1.025));
+                    restart.sprite.setPosition(*new Vector2f(pos.x-5, pos.y-5));
                 }
                 if (toMenu.isMouseOver(window, 0)) {
                     Vector2f pos = toMenu.sprite.getPosition();
@@ -383,7 +397,7 @@ int main() {
                 
 
                 if (Mouse::isButtonPressed(Mouse::Left)) {
-                    if (isMouseOver(window, textAgain)) {
+                    if (restart.isMouseOver(window, 0)) {
                         writeToFileResults(CURRENT_RESULT);
                         transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = gameWindow;
                     }
@@ -395,9 +409,9 @@ int main() {
 
 
                 window.draw(rect);
-                window.draw(textAgain);
+                window.draw(restart.sprite);
                 window.draw(toMenu.sprite);
-                window.draw(textGameOver1.sprite);
+                window.draw(textGameOver.sprite);
             }
         }
         if (transition) {
@@ -431,7 +445,7 @@ int main() {
                             nums = genNums(state);
                             genFnum(nums);
                             fstart = false;
-                           // nums[2][2][0] = 2048;
+                           
                         }
                         break; }
                     default:
@@ -456,8 +470,11 @@ int main() {
 
 
 void drawBar(RenderWindow& window, vector<int> num, int state) {
+    int temp = state;
+    if (state == 6)
+        temp = 4;
     Image img = Image();
-    img.loadFromFile("src\\" + to_string(state) + "\\" + to_string(num[0]) + ".png");
+    img.loadFromFile("src\\" + to_string(temp) + "\\" + to_string(num[0]) + ".png");
     Texture texture = Texture();
     texture.loadFromImage(img);
     Sprite sprite = Sprite();
@@ -503,22 +520,6 @@ void showCurrentResult(RenderWindow& window, int CURRENT_RESULT, int BEST_RESULT
     window.draw(highest_number);
     window.draw(text);
     window.draw(text1);
-}
-
-void drawButton(RenderWindow& window, Button& button, bool isOption) {
-    if (button.isMouseOver(window) && !isOption) {
-        Image img = Image();
-        img.loadFromFile("src\\buttons\\button4.png");
-        Texture texture = Texture();
-        texture.loadFromImage(img);
-        Sprite sprite = Sprite();
-        sprite.setTexture(texture);
-        sprite.setPosition(button.sprite.getPosition());
-        window.draw(sprite);
-    }
-    else {
-        window.draw(button.getSprite());
-    }
 }
 
 

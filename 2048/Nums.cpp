@@ -6,7 +6,8 @@ vector<vector<vector<int>>> genNums(int level)
 {
 
 	// вектор представляет собой двухмерный массив, самый меньший веткор представляет собой одну клетку на поле, хранит в себе свое значение, значение по иксу, значение по игрику
-	vector<vector<vector<int>>> nums; 
+	vector<vector<vector<int>>> nums;
+	level = level == 6 ? 4 : level;
 	int dist = 0;
 	switch (level) {
 	case 3: {dist = 198; break; }
