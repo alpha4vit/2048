@@ -14,7 +14,7 @@
     void writeVolumeToFile(int volume);
     void drawBar(RenderWindow& window, vector<int> num, int state);
     void drawPlayGround(RenderWindow& window, int state);
-    void drawTimer(RenderWindow& window, int& timeLimit, int &currentTime);
+    void drawTimer(RenderWindow& window, int& dif, int& timeLimit);
     void showCurrentResult(RenderWindow& window, int CURRENT_RESULT, int BEST_RESULT);
     void writeToFileResults(int LAST_RESULT);
     bool isMouseOver(RenderWindow& window, Text text);
@@ -51,11 +51,10 @@ int main() {
 
 
     //menu attributes
-    Object settingsButton = *new Object("src\\buttons\\settingsButton.png", *new Vector2f(300, 655));
-    Object playButton = *new Object("src\\buttons\\playButton.png", *new Vector2f(350, 500));
+    
+   
 
-
-
+     
 
     //transition attributes
     RectangleShape transitionRect;
@@ -86,10 +85,10 @@ int main() {
     bool isWinner = false;
     bool fstart = true;
     vector<vector<vector<int>>> nums;
-    bool firstMove = false;
+    bool firstMove = true;
     bool fl = true;
-    int timeLimit = 0;
-    int startTime;
+    int timeLimit = 300;
+    int startTime = 0;
 
 
     while (window.isOpen()) {
@@ -114,22 +113,17 @@ int main() {
 
         if (isMenu) {
             readResults(LAST_RESULT, BEST_RESULT);
-            Text playText(L"»√–¿“‹", font, 72);
-            playText.setFillColor(Color::White);
-            playText.setPosition(340, 500);
-            Text settingsText(L"Õ¿—“–Œ… »", font, 72);
-            settingsText.setFillColor(Color::White);
-            settingsText.setPosition(250, 665);
-            Text aboutText(L"Œ Õ¿—", font, 72);
-            aboutText.setFillColor(Color::White);
-            aboutText.setPosition(350, 820);
+            Object aboutText("src\\buttons\\about.png", *new Vector2f(380, 750));
+            Object playText("src\\buttons\\playButton.png", *new Vector2f(350, 500));
+            Object settingsText("src\\buttons\\settings1.png", *new Vector2f(290, 610));
             Object logo("src\\logo\\logo1.png", *new Vector2f(150, 150));
+            
 
             if (Mouse::isButtonPressed(Mouse::Left) && !buttonPressed) {
-                if (isMouseOver(window, playText) && !showOption) {
+                if (playText.isMouseOver(window, 0) && !showOption) {
                     transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = menuOption;
                 }
-                else if (isMouseOver(window, settingsText) && !showOption) {
+                else if (settingsText.isMouseOver(window, 0) && !showOption) {
                     transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = settingsWindow;
                 }
                 else if (!transition) {
@@ -138,37 +132,34 @@ int main() {
                 buttonPressed = true;
             }
             if (!showOption) {
-                if (isMouseOver(window, playText)) {
-                    Vector2f pos = playText.getPosition();
-                    playText.setFillColor(Color(117, 117, 117));
-                    playText.setScale(*new Vector2f(1.05, 1.05));
-                    playText.setPosition(pos.x - 5, pos.y - 5);
+                if (playText.isMouseOver(window,  0)) {
+                    Vector2f pos = playText.sprite.getPosition();
+                    playText.sprite.setScale(*new Vector2f(1.02, 1.02));
+                    playText.sprite.setPosition(pos.x - 2, pos.y - 2);
                 }
-                if (isMouseOver(window, settingsText)) {
-                    Vector2f pos = settingsText.getPosition();
-                    settingsText.setFillColor(Color(117, 117, 117));
-                    settingsText.setScale(*new Vector2f(1.05, 1.05));
-                    settingsText.setPosition(pos.x - 5, pos.y - 5);
+                if (settingsText.isMouseOver(window, 0)) {
+                    Vector2f pos = settingsText.sprite.getPosition();
+                    settingsText.sprite.setScale(*new Vector2f(1.02, 1.02));
+                    settingsText.sprite.setPosition(pos.x - 2, pos.y - 2);
                 }
-                if (isMouseOver(window, aboutText)) {
-                    Vector2f pos = aboutText.getPosition();
-                    aboutText.setFillColor(Color(117, 117, 117));
-                    aboutText.setScale(*new Vector2f(1.05, 1.05));
-                    aboutText.setPosition(pos.x - 5, pos.y - 5);
+                if (aboutText.isMouseOver(window, 0)) {
+                    Vector2f pos = aboutText.sprite.getPosition();
+                    aboutText.sprite.setScale(*new Vector2f(1.02, 1.02));
+                    aboutText.sprite.setPosition(pos.x - 2, pos.y - 2);
                 }
             }
 
 
-            window.draw(playButton.sprite);
-            window.draw(settingsButton.sprite);
-            window.draw(aboutText);
+            window.draw(playText.sprite);
+            window.draw(settingsText.sprite);
+            window.draw(aboutText.sprite);
             drawText(window, to_string(LAST_RESULT), *new Vector2f(100, 100), 0, false);
             drawText(window, to_string(BEST_RESULT), *new Vector2f(200, 100), 0, false);
             window.draw(logo.sprite);
 
         }
         if (isSettings) {
-            //Object audioLogo = *new Object("src\\buttons\\audio.png", *new Vector2f(60, 230));
+            
             Object buttonExit = *new Object("src\\buttons\\home.png", *new Vector2f(870, 40));
             window.draw(sliderLine.sprite);
             if (buttonExit.isMouseOver(window, 0)) {
@@ -192,33 +183,37 @@ int main() {
             window.draw(buttonExit.sprite);
             window.draw(slider.sprite);
             window.draw(title.sprite);
-           // window.draw(audioLogo.sprite);
             writeVolumeToFile(volume);
         }
         if (showOption){
             RectangleShape rect;
             rect.setSize(*new Vector2f(1000, 1000));
             rect.setFillColor(*new Color(255, 255, 255, 230));
-            Object textChoose("src\\buttons\\chooseState.png", *new Vector2f(50, 40));
-            Object x3("src\\buttons\\3x3.png", *new Vector2f(350, 300));
-            Object x4("src\\buttons\\4x4.png", *new Vector2f(350, 520));
-            Object x5("src\\buttons\\5x5.png", *new Vector2f(350, 740));
-            Object set = *new Object("src\\buttons\\settingsButton.png", *new Vector2f(300, 900));
+            Object textChoose("src\\buttons\\chooseState.png", *new Vector2f(50, 20));
+            Object x3("src\\buttons\\3x3.png", *new Vector2f(350, 230));
+            Object x4("src\\buttons\\4x4.png", *new Vector2f(350, 430));
+            Object x5("src\\buttons\\5x5.png", *new Vector2f(350, 630));
+            Object time("src\\buttons\\time1.png", *new Vector2f(290, 800));
 
             if (x3.isMouseOver(window, 0)) {
                 Vector2f pos = x3.sprite.getPosition();
-                x3.sprite.setScale(1.05, 1.05);
-                x3.sprite.setPosition(pos.x - 5, pos.y - 5);
+                x3.sprite.setScale(1.02, 1.02);
+                x3.sprite.setPosition(pos.x - 2, pos.y - 2);
             }
             else if (x4.isMouseOver(window, 0)) {
                 Vector2f pos = x4.sprite.getPosition();
-                x4.sprite.setScale(1.05, 1.05);
-                x4.sprite.setPosition(pos.x - 5, pos.y - 5);
+                x4.sprite.setScale(1.02, 1.02);
+                x4.sprite.setPosition(pos.x - 2, pos.y - 2);
             }
             else if (x5.isMouseOver(window, 0)) {
                 Vector2f pos = x5.sprite.getPosition();
-                x5.sprite.setScale(1.05, 1.05);
-                x5.sprite.setPosition(pos.x - 5, pos.y - 5);
+                x5.sprite.setScale(1.02, 1.02);
+                x5.sprite.setPosition(pos.x - 2, pos.y - 2);
+            }
+            else if (time.isMouseOver(window, 0)) {
+                Vector2f pos = time.sprite.getPosition();
+                time.sprite.setScale(1.02, 1.02);
+                time.sprite.setPosition(pos.x - 2, pos.y - 2);
             }
 
             if (Mouse::isButtonPressed(Mouse::Left)) {
@@ -231,7 +226,7 @@ int main() {
                 else if (x5.isMouseOver(window, 0)) {
                     transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = gameWindow; state = 5;
                 }
-                else if (set.isMouseOver(window, 0)) {
+                else if (time.isMouseOver(window, 0)) {
                     transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = gameWindow; state = 6;
                 }
             }
@@ -240,7 +235,7 @@ int main() {
             window.draw(x4.sprite);
             window.draw(x5.sprite);
             window.draw(textChoose.sprite);
-            window.draw(set.sprite);
+            window.draw(time.sprite);
         }
         if (isGame) {
             Object buttonRestart = *new Object("src\\buttons\\restart.png", *new Vector2f(870, 40));
@@ -298,16 +293,18 @@ int main() {
             isGameOver = checkGameOver(nums);
             isWinner = checkIsWinner(nums, state);
 
-            int currentTime = clock.getElapsedTime().asSeconds();
-            if (firstMove && fl) {
-                timeLimit = 100;
-                fl = false; firstMove = false;
+            
+            int dif = clock.getElapsedTime().asSeconds()-startTime;
+            
+            if (firstMove) {
+                dif = 0;
             }
-            if (state == 6  && currentTime - timeLimit < 0) {
-                drawTimer(window, timeLimit, currentTime);
+            cout << dif << endl;
+            if (state == 6  && dif >= 0) {
+                drawTimer(window, dif, timeLimit);
             }
-            if (state == 6 && timeLimit != 0 &&  currentTime - timeLimit > 0) {
-                isGameOver = true;
+            if (state == 6 && dif < 0) {
+                
             }
             
             if (ev.type == Event::MouseButtonReleased && ev.mouseButton.button == Mouse::Left) {
@@ -323,66 +320,82 @@ int main() {
                     keyPressed = true;
                     if (MoveRight(nums, CURRENT_RESULT))
                         newRandNum(nums);
-                    firstMove = true;
+                    if (firstMove) {
+                        firstMove = false; startTime = clock.getElapsedTime().asSeconds();
+                    }
                 }
                 else if (Keyboard::isKeyPressed(Keyboard::A)) {
                     keyPressed = true;
                     if (MoveLeft(nums, CURRENT_RESULT))
                         newRandNum(nums);
-                    firstMove = true;
+                    if (firstMove) {
+                        firstMove = false; startTime = clock.getElapsedTime().asSeconds();
+                    }
                 }
                 else if (Keyboard::isKeyPressed(Keyboard::S)) {
                     keyPressed = true;
                     if (MoveDown(nums, CURRENT_RESULT))
                         newRandNum(nums);
-                    firstMove = true;
+                    if (firstMove) {
+                        firstMove = false; startTime = clock.getElapsedTime().asSeconds();
+                    }
                 }
                 else if (Keyboard::isKeyPressed(Keyboard::W)) {
                     keyPressed = true;
                     if (MoveUp(nums, CURRENT_RESULT))
                         newRandNum(nums);
-                    firstMove = true;
+                    if (firstMove) {
+                        firstMove = false; startTime = clock.getElapsedTime().asSeconds();
+                    }
                 }
 
             }
 
 
 
-            if (Mouse::isButtonPressed(Mouse::Left) && !buttonPressed && !isGameOver) {
+            if (Mouse::isButtonPressed(Mouse::Left) && !buttonPressed && !isGameOver && !isWinner) {
                 buttonPressed = true;
                 if (buttonRestart.isMouseOver(window, 0)) {
-                    transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = gameWindow; firstMove = false;
+                    transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = gameWindow; firstMove = true;
                 }
                 else if (buttonExit.isMouseOver(window, 0)) {
                     writeToFileResults(CURRENT_RESULT);
-                    transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = menuWindow; firstMove = false;
+                    transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = menuWindow; firstMove = true;
                 }
                 else if (upArrow.isMouseOver(window, 0)) {
                     {
                         if (MoveUp(nums, CURRENT_RESULT))
                             newRandNum(nums);
-                        firstMove = true;
+                        if (firstMove) {
+                            firstMove = false; startTime = clock.getElapsedTime().asSeconds();
+                        }
                     }
                 }
                 else if (leftArrow.isMouseOver(window, 0)) {
                     {
                         if (MoveLeft(nums, CURRENT_RESULT))
                             newRandNum(nums);
-                        firstMove = true;
+                        if (firstMove) {
+                            firstMove = false; startTime = clock.getElapsedTime().asSeconds();
+                        }
                     }
                 }
                 else if (rightArrow.isMouseOver(window, 0)) {
                     {
                         if (MoveRight(nums, CURRENT_RESULT))
                             newRandNum(nums);
-                        firstMove = true;
+                        if (firstMove) {
+                           firstMove = false; startTime = clock.getElapsedTime().asSeconds();
+                        }
                     }
                 }
                 else if (downArrow.isMouseOver(window, 0)) {
                     {
                         if (MoveDown(nums, CURRENT_RESULT))
                             newRandNum(nums);
-                        firstMove = true;
+                        if (firstMove) {
+                            firstMove = false; startTime = clock.getElapsedTime().asSeconds();
+                        }
                     }
                 }
                 
@@ -392,14 +405,17 @@ int main() {
             if (isGameOver || isWinner) {
 
                 // GENERATING TEXT
-                Object textGameOver("src\\buttons\\over.png", *new Vector2f(150, 50));
+               
+                Object textGameOver("src\\buttons\\winner.png", *new Vector2f(150, 50));
+                
+                
                 Font font;
                 font.loadFromFile("ofont.ru_Bowler.ttf");
                 RectangleShape rect;
                 rect.setSize(*new Vector2f(1000, 1000));
                 rect.setFillColor(*new Color(255, 255, 255, 230));
-                Object restart("src\\buttons\\snachala.png", *new Vector2f(200, 600));
-                Object toMenu("src\\buttons\\menu.png", *new Vector2f(380, 780));
+                Object restart("src\\buttons\\snachala1.png", *new Vector2f(200, 600));
+                Object toMenu("src\\buttons\\menu1.png", *new Vector2f(380, 780));
                 if (restart.isMouseOver(window, 0)) {
                     Vector2f pos = restart.sprite.getPosition();
                     restart.sprite.setScale(*new Vector2f(1.01, 1.01));
@@ -427,6 +443,15 @@ int main() {
                 window.draw(rect);
                 window.draw(restart.sprite);
                 window.draw(toMenu.sprite);
+                
+                if (isWinner) {
+                    Object medal("src\\buttons\\medal.png", *new Vector2f(860, 350));
+                    medal.sprite.setRotation(20);
+                    window.draw(medal.sprite);
+                }
+                else {
+                    textGameOver = *new Object("src\\buttons\\over.png", *new Vector2f(150, 50));
+                }
                 window.draw(textGameOver.sprite);
             }
         }
@@ -461,6 +486,7 @@ int main() {
                             nums = genNums(state);
                             genFnum(nums);
                             fstart = false;
+                           //nums[2][2][0] = 4096;
                         }
                         break; }
                     default:
@@ -633,15 +659,14 @@ bool isMouseOver(RenderWindow& window, Text text)
 }
 
 
-void drawTimer(RenderWindow& window, int& timeLimit, int& currentTime) {
+void drawTimer(RenderWindow& window, int& dif, int& timeLimit) {
   
 
     Font font;
     font.loadFromFile("ofont.ru_Bowler.ttf");
-    Text text(to_string(timeLimit - currentTime) + " seconds", font, 40);
+    Text text(to_string(timeLimit-dif) + " seconds", font, 40);
     text.setPosition(670, 135);
-    float progress = currentTime / (float)timeLimit;
-    cout << currentTime << " " << timeLimit << endl;
+    float progress = dif / (float)timeLimit;
     Color startColor(0, 255, 0); 
     Color middleColor(255, 255, 0); 
     Color endColor(255, 0, 0); 

@@ -168,13 +168,16 @@ bool checkGameOver(vector<vector<vector<int>>> nums)
 
 bool checkIsWinner(vector<vector<vector<int>>>& nums, int state)
 {
-    if (state == 3 || state == 4)
+    if (state == 3 || state == 4 || state == 6) {
         state = 0;
+        cout << state << endl;
+    }
+        
     else if (state == 5)
         state = 1;
     for (int i = 0; i < nums.size(); ++i) {
         for (int j = 0; j < nums[i].size(); ++j) {
-            if (state == 1 && nums[i][j][0] == 4096 || state == 0 && nums[i][j][0] == 2048) {
+            if (state == 1 && nums[i][j][0] >= 4096 || state == 0 && nums[i][j][0] >= 2048) {
                 return true;
             }
         }
