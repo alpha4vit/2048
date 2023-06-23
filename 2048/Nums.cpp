@@ -1,3 +1,5 @@
+
+
 #pragma once
 #include"Nums.h"
 #include"includes.h"
@@ -7,18 +9,18 @@ vector<vector<vector<int>>> genNums(int level)
 
 	// вектор представляет собой двухмерный массив, самый меньший веткор представляет собой одну клетку на поле, хранит в себе свое значение, значение по иксу, значение по игрику
 	vector<vector<vector<int>>> nums;
-	level = level == 6 ? 4 : level;
+	level = level == 3 ? 1 : level;
 	int dist = 0;
 	switch (level) {
-	case 3: {dist = 198; break; }
-	case 4: {dist = 148; break; }
-	case 5: {dist = 118; break; }
+	case 0: {dist = 198; break; }
+	case 1: {dist = 148; break; }
+	case 2: {dist = 118; break; }
 	default: break;
 	}
 	int x = 40; int y = 40;
-	for (int i = 0; i < level; ++i) {
+	for (int i = 0; i < level + 3; ++i) {
 		vector<vector<int>> temp;
-		for (int j = 0; j < level; ++j) {
+		for (int j = 0; j < level + 3; ++j) {
 			vector<int> t;
 			t.push_back(0);
 			t.push_back(x);
@@ -33,6 +35,13 @@ vector<vector<vector<int>>> genNums(int level)
 		if (i == level - 1) {
 			temp.clear();
 		}
+	}
+
+	for (int i = 0; i < nums.size(); ++i) {
+		for (int j = 0; j < nums[i].size(); ++j) {
+			cout << nums[i][j][0] << " ";
+		}
+		cout << endl;
 	}
 	return nums;
 }
