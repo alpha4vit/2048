@@ -20,7 +20,7 @@ void writeToFileResults(int LAST_RESULT, int state);
 bool isMouseOver(RenderWindow& window, Text text);
 
 enum windows {
-    menuWindow, settingsWindow, gameWindow, menuOption
+    menuWindow, settingsWindow, gameWindow, menuOption, aboutUsWindow
 };
 
 int main() {
@@ -45,6 +45,7 @@ int main() {
     bool isSettings = false;
     bool showOption = false;
     bool isGame = false;
+    bool aboutUs = false;
 
 
     //menu attributes
@@ -131,8 +132,8 @@ int main() {
             Object aboutText("src\\buttons\\about.png", *new Vector2f(380, 750));
             Object playText("src\\buttons\\playButton.png", *new Vector2f(350, 500));
             Object settingsText("src\\buttons\\settings1.png", *new Vector2f(290, 610));
+            Object guideButton("src\\buttons\\guide.png", *new Vector2f(900, 25));
             Object logo("src\\logo\\logo1.png", *new Vector2f(150, 150));
-            readResults(BEST_RESULT, state);
             aboutText.sprite.setPosition(380.f, 750.f);
             playText.sprite.setPosition(350.f, 500.f);
             settingsText.sprite.setPosition(290.f, 610.f);
@@ -147,6 +148,9 @@ int main() {
                 }
                 else if (settingsText.isMouseOver(window, 0) && !showOption) {
                     transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = settingsWindow;
+                }
+                else if (aboutText.isMouseOver(window, 0) && !showOption) {
+                    transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = aboutUsWindow;
                 }
                 buttonPressed = true;
             }
@@ -173,6 +177,7 @@ int main() {
             window.draw(settingsText.sprite);
             window.draw(aboutText.sprite);
             window.draw(logo.sprite);
+            window.draw(guideButton.sprite);
 
         }
         if (isSettings) {
@@ -514,6 +519,20 @@ int main() {
                 }
             }
         }
+        if (aboutUs) {
+            buttonExit.sprite.setPosition(*new Vector2f(770, 40));
+            buttonExit.sprite.setScale(1.f, 1.f);
+            if (buttonExit.isMouseOver(window, 0)) {
+                buttonExit.sprite.setScale(1.05f, 1.05f);
+                buttonExit.sprite.setPosition(buttonExit.sprite.getPosition().x - 2.f, buttonExit.sprite.getPosition().y - 2.f);
+            }
+            if (Mouse::isButtonPressed(Mouse::Left)) {
+                if (buttonExit.isMouseOver(window, 0)) {
+                    transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = menuWindow; firstMove = true;
+                }
+            }
+            window.draw(buttonExit.sprite);
+        }
         if (transition) {
             float duration = 0.6;
             if (!transition) {
@@ -532,7 +551,7 @@ int main() {
                     if (isGame && windowType != gameWindow) isGame = false;
                     if (showOption && windowType != menuOption) showOption = false;
                     if (isSettings && windowType != settingsWindow) isSettings = false;
-
+                    if (aboutUs && windowType != aboutUs) aboutUs = false;
                     switch (windowType)
                     {
                     case menuOption: { showOption = true; break; }
@@ -550,10 +569,12 @@ int main() {
                             isWinner = false;
                             isGameOver = false;
                             writeToFileResults(CURRENT_RESULT, state);
+                            readResults(BEST_RESULT, state);
                             CURRENT_RESULT = 0;
-                            
+
                         }
                         break; }
+                    case aboutUsWindow: { aboutUs = true; break; }
                     default:
                         break;
                     }
