@@ -551,7 +551,7 @@ int main() {
                             isGameOver = false;
                             writeToFileResults(CURRENT_RESULT, state);
                             CURRENT_RESULT = 0;
-                            nums[2][2][0] = 4096;
+                            
                         }
                         break; }
                     default:
