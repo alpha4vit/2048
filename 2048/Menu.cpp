@@ -20,7 +20,7 @@ void writeToFileResults(int LAST_RESULT, int state);
 bool isMouseOver(RenderWindow& window, Text text);
 
 enum windows {
-    menuWindow, settingsWindow, gameWindow, menuOption, aboutUsWindow
+    menuWindow, settingsWindow, gameWindow, menuOption, aboutUsWindow, guideWindow
 };
 
 int main() {
@@ -108,6 +108,13 @@ int main() {
     Object toMenu("src\\buttons\\menu1.png", *new Vector2f(380, 680));
 
 
+    //about attributes
+    Object aboutPageTitle("src\\buttons\\aboutPage.png", *new Vector2f(350, 50));
+    Object aboutPageText("src\\buttons\\aboutText.png", *new Vector2f(25, 300));
+    Object guideImage("src\\buttons\\guide.png", *new Vector2f(25, 250));
+    bool isGuide = false;
+
+
     while (window.isOpen()) {
         Event ev;
         while (window.pollEvent(ev)) {
@@ -132,7 +139,7 @@ int main() {
             Object aboutText("src\\buttons\\about.png", *new Vector2f(380, 750));
             Object playText("src\\buttons\\playButton.png", *new Vector2f(350, 500));
             Object settingsText("src\\buttons\\settings1.png", *new Vector2f(290, 610));
-            Object guideButton("src\\buttons\\guide.png", *new Vector2f(900, 25));
+            Object guideButton("src\\buttons\\quest.png", *new Vector2f(880, 25));
             Object logo("src\\logo\\logo1.png", *new Vector2f(150, 150));
             aboutText.sprite.setPosition(380.f, 750.f);
             playText.sprite.setPosition(350.f, 500.f);
@@ -143,7 +150,7 @@ int main() {
 
 
             if (Mouse::isButtonPressed(Mouse::Left) && !buttonPressed) {
-                if (playText.isMouseOver(window, 0) && !showOption) {
+                if (playText.isMouseOver(window, 0) && !showOption && !isGuide) {
                     transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = menuOption;
                 }
                 else if (settingsText.isMouseOver(window, 0) && !showOption) {
@@ -152,9 +159,12 @@ int main() {
                 else if (aboutText.isMouseOver(window, 0) && !showOption) {
                     transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = aboutUsWindow;
                 }
+                else if (guideButton.isMouseOver(window, 0) && !showOption) {
+                    transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = guideWindow;
+                }
                 buttonPressed = true;
             }
-            if (!showOption) {
+            if (!showOption && !isGuide) {
                 if (playText.isMouseOver(window, 0)) {
                     Vector2f pos = playText.sprite.getPosition();
                     playText.sprite.setScale(*new Vector2f(1.02, 1.02));
@@ -170,7 +180,14 @@ int main() {
                     aboutText.sprite.setScale(*new Vector2f(1.02, 1.02));
                     aboutText.sprite.setPosition(pos.x - 2, pos.y - 2);
                 }
+                if (guideButton.isMouseOver(window, 0)) {
+                    Vector2f pos = guideButton.sprite.getPosition();
+                    guideButton.sprite.setScale(*new Vector2f(1.02, 1.02));
+                    guideButton.sprite.setPosition(pos.x - 2, pos.y - 2);
+                }
             }
+
+            
 
 
             window.draw(playText.sprite);
@@ -178,6 +195,18 @@ int main() {
             window.draw(aboutText.sprite);
             window.draw(logo.sprite);
             window.draw(guideButton.sprite);
+
+            if (isGuide) {
+                RectangleShape rect;
+                rect.setSize(*new Vector2f(1000, 1000));
+                rect.setFillColor(*new Color(255, 255, 255, 230));
+                window.draw(rect);
+                window.draw(guideImage.sprite);
+                if (Mouse::isButtonPressed(Mouse::Left)) {
+                    if (!guideImage.isMouseOver(window, 0))
+                        isGuide = false;
+                }
+            }
 
         }
         if (isSettings) {
@@ -335,10 +364,10 @@ int main() {
             if (firstMove) {
                 dif = 0;
             }
-            if (state == 3 && dif >= 0) {
+            if (state == 3 && dif <=300) {
                 drawTimer(window, dif, timeLimit);
             }
-            if (state == 3 && dif < 0) {
+            if (state == 3 && dif == 300) {
                 isGameOver = true;
             }
             if (ev.type == Event::MouseButtonReleased && ev.mouseButton.button == Mouse::Left) {
@@ -520,7 +549,7 @@ int main() {
             }
         }
         if (aboutUs) {
-            buttonExit.sprite.setPosition(*new Vector2f(770, 40));
+            buttonExit.sprite.setPosition(*new Vector2f(870, 40));
             buttonExit.sprite.setScale(1.f, 1.f);
             if (buttonExit.isMouseOver(window, 0)) {
                 buttonExit.sprite.setScale(1.05f, 1.05f);
@@ -531,6 +560,8 @@ int main() {
                     transition = true; transitionStart = clock.getElapsedTime().asSeconds(); windowType = menuWindow; firstMove = true;
                 }
             }
+            window.draw(aboutPageText.sprite);
+            window.draw(aboutPageTitle.sprite);
             window.draw(buttonExit.sprite);
         }
         if (transition) {
@@ -547,7 +578,7 @@ int main() {
                     alpha = (transitionTime / (duration / 2)) * 255;
                 }
                 else if (clock.getElapsedTime().asSeconds() < transitionStart + duration) {
-                    if (isMenu && windowType != menuWindow && windowType != menuOption) isMenu = false;
+                    if (isMenu && windowType != menuWindow && windowType != menuOption && windowType != guideWindow) isMenu = false;
                     if (isGame && windowType != gameWindow) isGame = false;
                     if (showOption && windowType != menuOption) showOption = false;
                     if (isSettings && windowType != settingsWindow) isSettings = false;
@@ -575,6 +606,7 @@ int main() {
                         }
                         break; }
                     case aboutUsWindow: { aboutUs = true; break; }
+                    case guideWindow: {isGuide = true; break; }
                     default:
                         break;
                     }
